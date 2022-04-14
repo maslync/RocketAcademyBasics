@@ -100,7 +100,7 @@ var main = function (input) {
     myOutputValue = comparePlayersScore();
 
     resetGame();
-    //review why NaN, and use strings
+    //review why NaN, and use strings, sum
     return myOutputValue;
   }
 };
