@@ -13,7 +13,7 @@ var currentPlayerRolls = [];
 
 var currentPlayer = 1;
 var allPlayersScore = [];
-
+// function to generate dice roll
 var rollDice = function () {
   var randomDecimal = Math.random() * 6;
   var randomInteger = Math.floor(randomDecimal) + 1;
@@ -27,7 +27,7 @@ var rollDicePlayer = function () {
     currentPlayerRolls.push(rollDice());
     counter = counter + 1;
   }
-  return `Hi Player ${currentPlayer} You have rolled a ${currentPlayerRolls[0]} for Dice 1 and a ${currentPlayerRolls[1]} for Dice 2. <br><br> Input 1 or 2 to select which dice will be the first digit of your final value. Good luck!`;
+  return `Hello Player ${currentPlayer} You have rolled a ${currentPlayerRolls[0]} for Dice 1 and a ${currentPlayerRolls[1]} for Dice 2. <br><br> Input 1 or 2 to select which dice will be the first digit of your final value. Good luck!`;
 };
 
 // 2. player decides order of dice, using if logic
@@ -40,30 +40,40 @@ var detPlayerScore = function (playerInput) {
     playerScore = Number(
       String(currentPlayerRolls[0]) + String(currentPlayerRolls[1])
     );
-    return `Your final value is ${playerScore}`;
   }
   if (playerInput == 2) {
     playerScore = Number(
-      String(currentPlayerRolls[1]) + String(currentPlayerRolls[2])
+      String(currentPlayerRolls[1]) + String(currentPlayerRolls[0])
     );
-    return `Your final value is ${playerScore}`;
   }
 
   allPlayersScore.push(playerScore);
   currentPlayerRolls = []; //clear current player array to prepare for the next player
-  return `${currentPlayer}, your selected value is ${playerScore}`;
+  return `Player ${currentPlayer}, your selected value is ${playerScore}`;
 };
 
 var comparePlayersScore = function () {
-  var compareValue = `Player 1's score is ${allPlayersScore[0]} and Player 2's score is ${allPlayersScore[1]}.`;
+  var compareValue =
+    "Player 1's score is " +
+    allPlayersScore[0] +
+    " and Player 2's score is " +
+    allPlayersScore[1];
+  // player 1 wins
   if (allPlayersScore[0] > allPlayersScore[1]) {
-    compareValue = compareValue + ` Congratulations Player 1, you win!`;
+    compareValue =
+      compareValue +
+      " <br> Congratulations Player 1, you win! <br><br> Click on submit to start again!";
   }
+  //player 2 wins
   if (allPlayersScore[0] < allPlayersScore[1]) {
-    compareValue = compareValue + ` Congratulations Player 2, you win!`;
+    compareValue =
+      compareValue +
+      " <br> Congratulations Player 2, you win! <br><br> Click on submit to start again!";
   }
+  // its a tie
   if (allPlayersScore[0] == allPlayersScore[1]) {
-    compareValue = compareValue + ` It's a tie! Try again.`;
+    compareValue =
+      compareValue + " <br> It's a tie! <br><br> Click on submit to try again.";
   }
   return compareValue;
 };
@@ -76,6 +86,7 @@ var resetGame = function () {
 
 var main = function (input) {
   var myOutputValue = "";
+
   if (gameStage == playerRollDice) {
     myOutputValue = rollDicePlayer();
     gameStage = playerChooseOrder;
@@ -100,9 +111,6 @@ var main = function (input) {
     myOutputValue = comparePlayersScore();
 
     resetGame();
-
-    return myOutputValue;
+    return `${myOutputValue}`;
   }
 };
-// base code is working.. to go to next step
-// test again
