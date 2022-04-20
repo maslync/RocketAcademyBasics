@@ -111,7 +111,7 @@ var main = function (input) {
     currentGameMode = GAMECARDSDRAWN;
 
     myOutputValue =
-      "All players have been dealt a card.<br>Click on the button to calculate the cards. <br><br> Good luck!";
+      "All players have been dealt a card.<br>Click on the button to calculate the cards. <br><br> Drum Roll 🥁🥁 !";
 
     return myOutputValue;
   }
