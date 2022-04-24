@@ -43,11 +43,11 @@ var makeDeck = function () {
       if (cardName == 1) {
         cardName = "ace";
       } else if (cardName == 11) {
-        cardName = "jack";
+        cardName = "Jack";
       } else if (cardName == 12) {
-        cardName = "queen";
+        cardName = "Queen";
       } else if (cardName == 13) {
-        cardName = "king";
+        cardName = "King";
       }
 
       // Create a new card with the current name, suit, and rank
@@ -115,9 +115,9 @@ var calculateTotalHandValue = function (handArray) {
   while (index < handArray.length) {
     var currentCard = handArray[index];
     if (
-      currentCard.name == "king" ||
-      currentCard.name == "queen" ||
-      currentCard.name == "jack"
+      currentCard.name == "King" ||
+      currentCard.name == "Queen" ||
+      currentCard.name == "Jack"
     ) {
       totalHandValue = totalHandValue + 10;
     } else if (currentCard.name == "ace") {
@@ -140,7 +140,7 @@ var calculateTotalHandValue = function (handArray) {
 
 // display player and dealer's cards on screen
 var displayPlayerAndDealerHands = function (playerHandArray, dealerHandArray) {
-  var playerMessage = "Player Hand is <br>";
+  var playerMessage = "<b>Player</b> Hand is <br>";
   var index = 0;
   while (index < playerHandArray.length) {
     playerMessage =
@@ -153,7 +153,7 @@ var displayPlayerAndDealerHands = function (playerHandArray, dealerHandArray) {
     index = index + 1;
   }
   index = 0;
-  var dealerMessage = "One card on the Dealer's Hand is <br>";
+  var dealerMessage = "One card on the <b>Dealer's</b> Hand is <br>";
   var index = 1;
   while (index < dealerHandArray.length) {
     dealerMessage =
@@ -171,7 +171,7 @@ var displayPlayerAndDealerHands = function (playerHandArray, dealerHandArray) {
 
 // display the total score (hand value) for the player and the dealer in the output
 var displayHandTotalValues = function (playerHandValue, dealerHandValue) {
-  var totalHandValueMessage = `<br> Player total hand value is ${playerHandValue} and dealer total hand value is ${dealerHandValue}`;
+  var totalHandValueMessage = `<br> <b>Player</b> total hand value is ${playerHandValue} and <b>dealer</b> total hand value is ${dealerHandValue}`;
   return totalHandValueMessage;
 };
 
@@ -198,7 +198,7 @@ var main = function (input) {
     currentGameMode = GAMECARDSDRAWN;
 
     myOutputValue =
-      "All players have been dealt a card.<br>Click on the SUBMIT button to calculate the cards. <br><br> Drum Roll 🥁🥁 !";
+      "All players have been dealt a card.<br>Click on the <b>SUBMIT</b> button to calculate the cards. <br><br> Drum Roll 🥁🥁 !";
 
     return myOutputValue;
   }
@@ -229,7 +229,7 @@ var main = function (input) {
     } else {
       myOutputValue =
         displayPlayerAndDealerHands(playerHand, dealerHand) +
-        `<br>No Blackjack this time!<br><br> Click hit or stand to continue`;
+        `<br>No Blackjack this time! Click hit or stand to continue 🤞🏼`;
       console.log(myOutputValue);
       currentGameMode = GAMEOPTION;
 
@@ -268,7 +268,7 @@ var main = function (input) {
         myOutputValue = `${displayPlayerAndDealerHands(
           playerHand,
           dealerHand
-        )} <br> Player wins this round!<br> ${displayHandTotalValues(
+        )} <br> <b>Player</b> wins this round!<br> ${displayHandTotalValues(
           playerHandTotalValue,
           dealerHandTotalValue
         )}`;
@@ -276,7 +276,7 @@ var main = function (input) {
         myOutputValue = `${displayPlayerAndDealerHands(
           playerHand,
           dealerHand
-        )} <br> Dealer wins this round!<br> ${displayHandTotalValues(
+        )} <br> <b>Dealer</b> wins this round!<br> ${displayHandTotalValues(
           playerHandTotalValue,
           dealerHandTotalValue
         )}`;
