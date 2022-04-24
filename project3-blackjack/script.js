@@ -25,7 +25,7 @@ var makeDeck = function () {
   // Initialise an empty deck array
   var cardDeck = [];
   // Initialise an array of the 4 suits in our deck. We will loop over this array.
-  var suits = ["hearts", "diamonds", "clubs", "spades"];
+  var suits = ["♥️", "♦️", "♣️", "♠️"];
 
   // Loop over the suits array
   for (var i = 0; i < suits.length; i += 1) {
@@ -153,8 +153,8 @@ var displayPlayerAndDealerHands = function (playerHandArray, dealerHandArray) {
     index = index + 1;
   }
   index = 0;
-  var dealerMessage = "Dealer Hand is <br>";
-  var index = 0;
+  var dealerMessage = "One card on the Dealer's Hand is <br>";
+  var index = 1;
   while (index < dealerHandArray.length) {
     dealerMessage =
       dealerMessage +
