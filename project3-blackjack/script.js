@@ -9,6 +9,7 @@
 // 1. define game modes
 var GAMESTART = "game start";
 var GAMECARDSDRAWN = "cards are drawn";
+var GAMERESULTSSHOWN = "results are shown";
 var GAMEOPTION = "hit or stand";
 var currentGameMode = GAMESTART;
 
@@ -90,8 +91,94 @@ var createNewDeck = function () {
   return shuffledDeck;
 };
 
+// Game functions
+var checkForBlackjack = function (handArray) {
+  // loop through player's hand to find for blackjack (if yes return true), otherwise false
+  var playerCardOne = handArray[0];
+  var playerCardTwo = handArray[1];
+  var isBlackJack = false;
+
+  if (
+    (playerCardOne.name == "ace" && playerCardTwo.rank >= 10) ||
+    (playerCardOne.rank >= 10 && playerCardTwo.name == "ace")
+  ) {
+    isBlackJack = true;
+  }
+  return isBlackJack;
+};
+// in the event there is no black jack, calculate total score for player and dealer
+var calculateTotalHandValue = function (handArray) {
+  var totalHandValue = 0;
+  var aceCounter = 0;
+  // use a while loop to go through all the cards
+  var index = 0;
+  while (index < handArray.length) {
+    var currentCard = handArray[index];
+    if (
+      currentCard.name == "king" ||
+      currentCard.name == "queen" ||
+      currentCard.name == "jack"
+    ) {
+      totalHandValue = totalHandValue + 10;
+    } else if (currentCard.name == "ace") {
+      totalHandValue = totalHandValue + 11;
+      aceCounter = aceCounter + 1;
+    } else {
+      totalHandValue = totalHandValue + currentCard.rank;
+    }
+    index = index + 1;
+  }
+  index = 0;
+  while (index < aceCounter) {
+    if (totalHandValue > 21) {
+      totalHandValue = totalHandValue - 10;
+    }
+    index = index + 1;
+  }
+  return totalHandValue;
+};
+
+// display player and dealer's cards on screen
+var displayPlayerAndDealerHands = function (playerHandArray, dealerHandArray) {
+  var playerMessage = "Player Hand is <br>";
+  var index = 0;
+  while (index < playerHandArray.length) {
+    playerMessage =
+      playerMessage +
+      "- " +
+      playerHandArray[index].name +
+      " of " +
+      playerHandArray[index].suit +
+      "<br>";
+    index = index + 1;
+  }
+  index = 0;
+  var dealerMessage = "Dealer Hand is <br>";
+  var index = 0;
+  while (index < dealerHandArray.length) {
+    dealerMessage =
+      dealerMessage +
+      "- " +
+      dealerHandArray[index].name +
+      " of " +
+      dealerHandArray[index].suit +
+      "<br>";
+    index = index + 1;
+  }
+
+  return playerMessage + "<br>" + dealerMessage;
+};
+
+// display the total score (hand value) for the player and the dealer in the output
+var displayHandTotalValues = function (playerHandValue, dealerHandValue) {
+  var totalHandValueMessage = `<br> Player total hand value is ${playerHandValue} and dealer total hand value is ${dealerHandValue}`;
+  return totalHandValueMessage;
+};
+
 var main = function (input) {
   var myOutputValue = ""; //create an empty variable for the output value since it will be changed throughout the game
+
+  // 1st step of the game -> generate cards for each player
   if (currentGameMode == GAMESTART) {
     gameDeck = createNewDeck();
     console.log(gameDeck);
@@ -111,8 +198,95 @@ var main = function (input) {
     currentGameMode = GAMECARDSDRAWN;
 
     myOutputValue =
-      "All players have been dealt a card.<br>Click on the button to calculate the cards. <br><br> Drum Roll 🥁🥁 !";
+      "All players have been dealt a card.<br>Click on the SUBMIT button to calculate the cards. <br><br> Drum Roll 🥁🥁 !";
 
+    return myOutputValue;
+  }
+  // 2nd step -> check if any of the players have black jack
+  if (currentGameMode == GAMECARDSDRAWN) {
+    var playerHasBlackjack = checkForBlackjack(playerHand);
+    var dealerHasBlackjack = checkForBlackjack(dealerHand);
+
+    console.log("Does player have Blackjack?", playerHasBlackjack);
+    console.log("Does dealer have Blackjack?", dealerHasBlackjack);
+
+    // define the output values in the different blackjack situations as well as no blackjack (else condition, move to 3rd step)
+    if (playerHasBlackjack == true || dealerHasBlackjack == true) {
+      if (playerHasBlackjack == true && dealerHasBlackjack == true) {
+        myOutputValue =
+          displayPlayerAndDealerHands(playerHand, dealerHand) +
+          `Both player and dealer have Blackjack. It's a tie!`;
+      } else if (playerHasBlackjack == true && dealerHasBlackjack == false) {
+        myOutputValue =
+          displayPlayerAndDealerHands(playerHand, dealerHand) +
+          `Player has a Blackjack, Congratulations Player, you have won this round!`;
+      } else {
+        myOutputValue =
+          displayPlayerAndDealerHands(playerHand, dealerHand) +
+          `Dealer won with a Blackjack this time. Sorry Player, try again!`;
+      }
+      console.log(myOutputValue);
+    } else {
+      myOutputValue =
+        displayPlayerAndDealerHands(playerHand, dealerHand) +
+        `<br>No Blackjack this time!<br><br> Click hit or stand to continue`;
+      console.log(myOutputValue);
+      currentGameMode = GAMEOPTION;
+
+      return myOutputValue;
+    }
+  }
+  //4th step, player selects whether to hit or stand
+  if (currentGameMode == GAMEOPTION) {
+    if (input == "hit") {
+      playerHand.push(gameDeck.pop());
+      myOutputValue = `${displayPlayerAndDealerHands(
+        playerHand,
+        dealerHand
+      )} <br> You drew another card. Would you like to continue to hit or stand?`;
+    } else if (input == "stand") {
+      var playerHandTotalValue = calculateTotalHandValue(playerHand);
+      var dealerHandTotalValue = calculateTotalHandValue(dealerHand);
+      //when the player inputs stand, the dealer will then have the option to hit or stand
+      while (dealerHandTotalValue < 17) {
+        dealerHand.push(gameDeck.pop());
+        dealerHandTotalValue = calculateTotalHandValue(dealerHand);
+      }
+
+      console.log("Player's total hand value is", playerHandTotalValue);
+      console.log("Dealer's total hand value is", dealerHandTotalValue);
+
+      if (playerHandTotalValue == dealerHandTotalValue) {
+        myOutputValue = `${displayPlayerAndDealerHands(
+          playerHand,
+          dealerHand
+        )} <br> It is a tie!<br> ${displayHandTotalValues(
+          playerHandTotalValue,
+          dealerHandTotalValue
+        )}`;
+      } else if (playerHandTotalValue > dealerHandTotalValue) {
+        myOutputValue = `${displayPlayerAndDealerHands(
+          playerHand,
+          dealerHand
+        )} <br> Player wins this round!<br> ${displayHandTotalValues(
+          playerHandTotalValue,
+          dealerHandTotalValue
+        )}`;
+      } else {
+        myOutputValue = `${displayPlayerAndDealerHands(
+          playerHand,
+          dealerHand
+        )} <br> Dealer wins this round!<br> ${displayHandTotalValues(
+          playerHandTotalValue,
+          dealerHandTotalValue
+        )}`;
+        currentGameMode = GAMERESULTSSHOWN;
+      }
+    } else {
+      myOutputValue =
+        "Input error. Enter hit or stand to continue.<br><br>" +
+        displayPlayerAndDealerHands(playerHand, dealerHand);
+    }
     return myOutputValue;
   }
 };
