@@ -13,6 +13,8 @@ var GAMERESULTSSHOWN = "results are shown";
 var GAMEOPTION = "hit or stand";
 var currentGameMode = GAMESTART;
 
+var gameOver = false;
+
 //2. Create an array for player and dealer to hold their cards
 var playerHand = [];
 var dealerHand = [];
@@ -110,7 +112,7 @@ var checkForBlackjack = function (handArray) {
 var calculateTotalHandValue = function (handArray) {
   var totalHandValue = 0;
   var aceCounter = 0;
-  // use a while loop to go through all the cards
+  // use a 'while' loop to go through all the cards
   var index = 0;
   while (index < handArray.length) {
     var currentCard = handArray[index];
@@ -139,6 +141,40 @@ var calculateTotalHandValue = function (handArray) {
 };
 
 // display player and dealer's cards on screen
+var displayPlayerAndDealerMinusOneHands = function (
+  playerHandArray,
+  dealerHandArray
+) {
+  var playerMessage = "<b>Player</b> Hand is <br>";
+  var index = 0;
+  while (index < playerHandArray.length) {
+    playerMessage =
+      playerMessage +
+      "- " +
+      playerHandArray[index].name +
+      " of " +
+      playerHandArray[index].suit +
+      "<br>";
+    index = index + 1;
+  }
+  index = 0;
+  var dealerMinusOneMessage =
+    "<b>Dealer's</b> Hand is (one card is hidden, take a guess!)<br>";
+  var index = 1;
+  while (index < dealerHandArray.length) {
+    dealerMinusOneMessage =
+      dealerMinusOneMessage +
+      "- " +
+      dealerHandArray[index].name +
+      " of " +
+      dealerHandArray[index].suit +
+      "<br>";
+    index = index + 1;
+  }
+
+  return playerMessage + "<br>" + dealerMinusOneMessage;
+};
+
 var displayPlayerAndDealerHands = function (playerHandArray, dealerHandArray) {
   var playerMessage = "<b>Player</b> Hand is <br>";
   var index = 0;
@@ -153,8 +189,8 @@ var displayPlayerAndDealerHands = function (playerHandArray, dealerHandArray) {
     index = index + 1;
   }
   index = 0;
-  var dealerMessage = "One card on the <b>Dealer's</b> Hand is <br>";
-  var index = 1;
+  var dealerMessage = "<b>Dealer's</b> Full Hand is <br>";
+  var index = 0;
   while (index < dealerHandArray.length) {
     dealerMessage =
       dealerMessage +
@@ -171,7 +207,7 @@ var displayPlayerAndDealerHands = function (playerHandArray, dealerHandArray) {
 
 // display the total score (hand value) for the player and the dealer in the output
 var displayHandTotalValues = function (playerHandValue, dealerHandValue) {
-  var totalHandValueMessage = `<br> <b>Player</b> total hand value is ${playerHandValue} and <b>dealer</b> total hand value is ${dealerHandValue}`;
+  var totalHandValueMessage = `<br> <b>Player</b> total hand value is ${playerHandValue} and <b>Dealer</b> total hand value is ${dealerHandValue}`;
   return totalHandValueMessage;
 };
 
@@ -228,7 +264,7 @@ var main = function (input) {
       console.log(myOutputValue);
     } else {
       myOutputValue =
-        displayPlayerAndDealerHands(playerHand, dealerHand) +
+        displayPlayerAndDealerMinusOneHands(playerHand, dealerHand) +
         `<br>No Blackjack this time! Click hit or stand to continue 🤞🏼`;
       console.log(myOutputValue);
       currentGameMode = GAMEOPTION;
@@ -240,7 +276,7 @@ var main = function (input) {
   if (currentGameMode == GAMEOPTION) {
     if (input == "hit") {
       playerHand.push(gameDeck.pop());
-      myOutputValue = `${displayPlayerAndDealerHands(
+      myOutputValue = `${displayPlayerAndDealerMinusOneHands(
         playerHand,
         dealerHand
       )} <br> You drew another card. Would you like to continue to hit or stand?`;
@@ -255,7 +291,6 @@ var main = function (input) {
 
       console.log("Player's total hand value is", playerHandTotalValue);
       console.log("Dealer's total hand value is", dealerHandTotalValue);
-
       if (playerHandTotalValue == dealerHandTotalValue) {
         myOutputValue = `${displayPlayerAndDealerHands(
           playerHand,
@@ -271,7 +306,7 @@ var main = function (input) {
         )} <br> <b>Player</b> wins this round!<br> ${displayHandTotalValues(
           playerHandTotalValue,
           dealerHandTotalValue
-        )}`;
+        )}<br><br>Refresh the page to start again!`;
       } else {
         myOutputValue = `${displayPlayerAndDealerHands(
           playerHand,
@@ -279,14 +314,16 @@ var main = function (input) {
         )} <br> <b>Dealer</b> wins this round!<br> ${displayHandTotalValues(
           playerHandTotalValue,
           dealerHandTotalValue
-        )}`;
+        )}<br><br>Refresh the page to start again!`;
         currentGameMode = GAMERESULTSSHOWN;
       }
     } else {
       myOutputValue =
         "Input error. Enter hit or stand to continue.<br><br>" +
-        displayPlayerAndDealerHands(playerHand, dealerHand);
+        displayPlayerAndDealerMinusOneHands(playerHand, dealerHand);
     }
     return myOutputValue;
   }
 };
+
+//next step is to make the max value = 21, once the player / dealer's score exceed 21 they will lose.
